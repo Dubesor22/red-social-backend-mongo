@@ -87,6 +87,7 @@ const UserController = {
       await user.save();
       res.send({ message: "Welcome " + user.username, user, token });
     } catch (error) {
+      console.error(error);
       res.status(401).send({ message: "We had an issue checking the user..." });
     }
   },

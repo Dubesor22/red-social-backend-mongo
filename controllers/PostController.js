@@ -24,11 +24,15 @@ const PostController = {
   },
   async getAll(req, res) {
     try {
-      const posts = await Post.find().populate("userId", [
-        "username",
-        "email",
-        "avatar",
-      ]);
+      const posts = await Post.find()
+        .populate("userId", ["username", "email", "avatar"])
+        .populate({
+          path: "comments",
+          select: { body: 1, likes: 1 },
+          populate: {
+            path: "userId",
+          },
+        });
       console.log(posts);
       res.send(posts);
     } catch (error) {

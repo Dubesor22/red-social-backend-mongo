@@ -164,6 +164,7 @@ const UserController = {
         "email",
         "role",
         "followers",
+        "following",
         "avatar",
       ]);
       res.send(users);
@@ -213,6 +214,10 @@ const UserController = {
         })
         .populate({
           path: "followers",
+          select: { name: 1 },
+        })
+        .populate({
+          path: "following",
           select: { name: 1 },
         });
       user._doc.totalFollowers = user.followers.length;
@@ -274,9 +279,16 @@ const UserController = {
           { $push: { followers: req.user._id } },
           { new: true }
         );
-        res
-          .status(201)
-          .send({ message: `Now you are following ${user.username}` });
+        const user2 = await User.findByIdAndUpdate(
+          req.user._id,
+          { $push: { following: req.params._id } },
+          { new: true }
+        );
+        res.status(201).send({
+          message: `Now you are following ${user.username}`,
+          user,
+          user2,
+        });
       } else {
         res.status(400).send({ message: "You can't follow twice!" });
       }
@@ -293,7 +305,12 @@ const UserController = {
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send(user);
+        const user2 = await User.findByIdAndUpdate(
+          req.user._id,
+          { $pull: { following: req.params._id } },
+          { new: true }
+        );
+        res.status(200).send({ user, user2 });
       } else {
         res.status(400).send({
           message: "You can't unfollow someone you didn't follow first!",

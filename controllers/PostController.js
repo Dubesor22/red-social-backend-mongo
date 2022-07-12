@@ -122,7 +122,7 @@ const PostController = {
     try {
       const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
-      });
+      }).populate("userId", ["username", "email", "avatar"]);
       if (post === null) {
         res
           .status(400)
@@ -143,7 +143,7 @@ const PostController = {
           req.params._id,
           { $push: { likes: req.user._id } },
           { new: true }
-        );
+        ).populate("userId", ["username", "email", "avatar"]);
         await User.findByIdAndUpdate(
           req.user._id,
           { $push: { wishList: req.params._id } },
@@ -165,7 +165,7 @@ const PostController = {
           req.params._id,
           { $pull: { likes: req.user._id } },
           { new: true }
-        );
+        ).populate("userId", ["username", "email", "avatar"]);
         await User.findByIdAndUpdate(
           req.user._id,
           { $pull: { wishList: req.params._id } },

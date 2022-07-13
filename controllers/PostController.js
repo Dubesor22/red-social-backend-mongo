@@ -59,13 +59,7 @@ const PostController = {
           .send({ message: "You may need to introduce a valid Id format" });
         return;
       }
-      const post = await Post.findById(req.params._id).populate({
-        path: "comments",
-        select: { body: 1, likes: 1 },
-        populate: {
-          path: "userId",
-        },
-      });
+      const post = await Post.findById(req.params._id);
       if (post === null) {
         res
           .status(400)

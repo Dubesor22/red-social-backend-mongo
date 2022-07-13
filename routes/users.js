@@ -3,8 +3,8 @@ const router = express.Router();
 const UserController = require("../controllers/UserController");
 const {
   authentication,
-  isTheUser,
   isAdmin,
+  isTheUser,
 } = require("../middleware/authentication");
 const { uploadUserImages } = require("../middleware/multer");
 

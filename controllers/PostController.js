@@ -33,7 +33,6 @@ const PostController = {
             path: "userId",
           },
         });
-      console.log(posts);
       res.send(posts);
     } catch (error) {
       console.error(error);
@@ -60,7 +59,13 @@ const PostController = {
           .send({ message: "You may need to introduce a valid Id format" });
         return;
       }
-      const post = await Post.findById(req.params._id);
+      const post = await Post.findById(req.params._id).populate({
+        path: "comments",
+        select: { body: 1, likes: 1 },
+        populate: {
+          path: "userId",
+        },
+      });
       if (post === null) {
         res
           .status(400)
